@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.demo.DAO.RequireSecondMapper">
+    <update id="modifyClass">
+        UPDATE require_second
+        <set>
+        <if test="first !=null">
+            first_class=#{first},
+        </if>
+        <if test="second !=null">
+            second_class=#{second}
+        </if>
+        </set>
+        where id=#{id}
+    </update>
+    <update id="checkSoldSecond" >
+        UPDATE require_second SET is_check=1 , check_user_id=#{checkUserId}
+          <if test="failReason!=null and !failReason.isBlank()">
+                ,fail_reason =#{failReason}
+          </if>
+        WHERE id=#{id}
+    </update>
+    <select id="selectAllRequiredSecondCheckedByClass" resultType="com.example.demo.Entity.RequireSecond">
+        SELECT * FROM require_second WHERE is_check=1 AND fail_reason is null AND first_class =#{first} AND is_get=0
+        <if test="second !=null and !second.isBlank()">
+            AND second_class=#{second}
+        </if>
+    </select>
+    <select id="selectAllRequiredSecondUnChecked" resultType="com.example.demo.Entity.RequireSecond">
+        SELECT * FROM require_second WHERE is_check = 0
+    </select>
+</mapper>
